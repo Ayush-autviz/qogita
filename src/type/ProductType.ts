@@ -1,0 +1,49 @@
+export interface ProductType {
+  id: string;
+  name: string;
+  slug?: string;
+  gtin?: string;
+  category: string;
+  price: number;
+  originPrice: number;
+  rate: number;
+  new: boolean;
+  sale: boolean;
+  thumbnail?: string;
+  thumbImage?: string[];
+  totalSell?: number;
+  discount?: number;
+  priceSale?: number;
+  type: string;
+  vendor?: string;
+  quantity: number;
+  sold?: number;
+  quantityPurchase?: number;
+  action?: string;
+  sizes?: string[];
+  variation?: Array<{
+    color: string;
+    colorCode: string;
+    image: string;
+    colorImage: string;
+  }>;
+  categoryName?: string;
+  brandName?: string;
+  imageUrl?: string;
+  gender?: string;
+  description?: string;
+  images?: string[];
+  inventory?: number;
+  isInStock?: boolean;
+  delay?: number;
+  priceCurrency?: string;
+  origin?: string;
+  shippingFromCountries?: string[];
+  dimensions?: {
+    width?: string;
+    height?: string;
+    depth?: string;
+    mass?: number;
+    qid?: string;
+  };
+}

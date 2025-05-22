@@ -1,0 +1,35 @@
+/* Custom styles for the price range slider */
+
+.custom-price-slider .rc-slider-rail {
+  background-color: #e5e7eb;
+  height: 4px;
+}
+
+.custom-price-slider .rc-slider-track {
+  background-color: #000000;
+  height: 4px;
+}
+
+.custom-price-slider .rc-slider-handle {
+  background-color: #000000;
+  border: none;
+  height: 16px;
+  width: 16px;
+  margin-top: -6px;
+  box-shadow: 0 0 0 2px white;
+}
+
+.custom-price-slider .rc-slider-handle:hover,
+.custom-price-slider .rc-slider-handle:active,
+.custom-price-slider .rc-slider-handle:focus {
+  box-shadow: 0 0 0 3px white, 0 0 0 4px #000000;
+}
+
+/* Improve the handle appearance for better usability */
+.custom-price-slider .rc-slider-handle:hover {
+  cursor: grab;
+}
+
+.custom-price-slider .rc-slider-handle:active {
+  cursor: grabbing;
+}
