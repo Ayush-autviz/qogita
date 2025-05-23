@@ -100,15 +100,20 @@ const Product: React.FC<ProductProps> = ({ data, type, style }) => {
     return (
         <>
             {type === "grid" ? (
-                <div className={`product-item grid-type ${style}`}>
+                <div className={`product-item grid-type ${style} ${!data.isInStock ? 'out-of-stock' : ''}`}>
                     <div onClick={() => handleDetailProduct(data.id)} className="product-main cursor-pointer block">
                         <div className="product-thumb bg-white relative overflow-hidden rounded-2xl">
-                            {data.new && (
+                            {!data.isInStock && (
+                                <div className="product-tag text-button-uppercase text-white bg-red px-3 py-0.5 inline-block rounded-full absolute top-3 left-3 z-[1]">
+                                    Out of Stock
+                                </div>
+                            )}
+                            {data.new && data.isInStock && (
                                 <div className="product-tag text-button-uppercase bg-green px-3 py-0.5 inline-block rounded-full absolute top-3 left-3 z-[1]">
                                     New
                                 </div>
                             )}
-                            {data.sale && (
+                            {data.sale && data.isInStock && (
                                 <div className="product-tag text-button-uppercase text-white bg-red px-3 py-0.5 inline-block rounded-full absolute top-3 left-3 z-[1]">
                                     Sale
                                 </div>
@@ -238,55 +243,61 @@ const Product: React.FC<ProductProps> = ({ data, type, style }) => {
                                             Quick View
                                         </div>
                                     )}
-                                    {data.action === 'add to cart' ? (
-                                        <div
-                                            className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
-                                            onClick={e => {
-                                                e.stopPropagation();
-                                                handleAddToCart()
-                                            }}
-                                        >
-                                            Add To Cart
-                                        </div>
-                                    ) : (
-                                        <>
+                                    {data.isInStock ? (
+                                        data.action === 'add to cart' ? (
                                             <div
-                                                className="quick-shop-btn text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
+                                                className="add-cart-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
                                                 onClick={e => {
                                                     e.stopPropagation();
-                                                    setOpenQuickShop(!openQuickShop)
+                                                    handleAddToCart()
                                                 }}
                                             >
-                                                Quick Shop
+                                                Add To Cart
                                             </div>
-                                            <div
-                                                className={`quick-shop-block absolute left-5 right-5 bg-white p-5 rounded-[20px] ${openQuickShop ? 'open' : ''}`}
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                }}
-                                            >
-                                                <div className="list-size flex items-center justify-center flex-wrap gap-2">
-                                                    {data.sizes.map((item, index) => (
-                                                        <div
-                                                            className={`size-item w-10 h-10 rounded-full flex items-center justify-center text-button bg-white border border-line ${activeSize === item ? 'active' : ''}`}
-                                                            key={index}
-                                                            onClick={() => handleActiveSize(item)}
-                                                        >
-                                                            {item}
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                        ) : (
+                                            <>
                                                 <div
-                                                    className="button-main w-full text-center rounded-full py-3 mt-4"
-                                                    onClick={() => {
-                                                        handleAddToCart()
-                                                        setOpenQuickShop(false)
+                                                    className="quick-shop-btn text-button-uppercase py-2 text-center rounded-full duration-500 bg-white hover:bg-black hover:text-white"
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        setOpenQuickShop(!openQuickShop)
                                                     }}
                                                 >
-                                                    Add To cart
+                                                    Quick Shop
                                                 </div>
-                                            </div>
-                                        </>
+                                                <div
+                                                    className={`quick-shop-block absolute left-5 right-5 bg-white p-5 rounded-[20px] ${openQuickShop ? 'open' : ''}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                    }}
+                                                >
+                                                    <div className="list-size flex items-center justify-center flex-wrap gap-2">
+                                                        {data.sizes.map((item, index) => (
+                                                            <div
+                                                                className={`size-item w-10 h-10 rounded-full flex items-center justify-center text-button bg-white border border-line ${activeSize === item ? 'active' : ''}`}
+                                                                key={index}
+                                                                onClick={() => handleActiveSize(item)}
+                                                            >
+                                                                {item}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <div
+                                                        className="button-main w-full text-center rounded-full py-3 mt-4"
+                                                        onClick={() => {
+                                                            handleAddToCart()
+                                                            setOpenQuickShop(false)
+                                                        }}
+                                                    >
+                                                        Add To cart
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )
+                                    ) : (
+                                        <div className="out-of-stock-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-gray-200 text-gray-500 cursor-not-allowed">
+                                            Out of Stock
+                                        </div>
                                     )}
                                 </div>
                                 : <></>
@@ -345,7 +356,7 @@ const Product: React.FC<ProductProps> = ({ data, type, style }) => {
                                             <div className="tag-action bg-black text-white caption2 px-1.5 py-0.5 rounded-sm">Quick View</div>
                                             <Icon.Eye size={20} />
                                         </div>
-                                        {style === 'style-5' && data.action !== 'add to cart' && (
+                                        {style === 'style-5' && data.isInStock && data.action !== 'add to cart' && (
                                             <div
                                                 className={`quick-shop-block absolute left-5 right-5 bg-white p-5 rounded-[20px] ${openQuickShop ? 'open' : ''}`}
                                                 onClick={(e) => {
@@ -420,7 +431,7 @@ const Product: React.FC<ProductProps> = ({ data, type, style }) => {
                                 </div>
                             </div>
                             <div className="product-name text-title duration-300">{data.name}</div>
-                            {data.variation.length > 0 && data.action === 'add to cart' && (
+                            {data.variation.length > 0 && data.isInStock && data.action === 'add to cart' && (
                                 <div className="list-color py-2 max-md:hidden flex items-center gap-2 flex-wrap duration-500">
                                     {data.variation.map((item, index) => (
                                         <div
@@ -436,7 +447,7 @@ const Product: React.FC<ProductProps> = ({ data, type, style }) => {
                                     ))}
                                 </div>
                             )}
-                            {data.variation.length > 0 && data.action === 'quick shop' && (
+                            {data.variation.length > 0 && data.isInStock && data.action === 'quick shop' && (
                                 <div className="list-color-image max-md:hidden flex items-center gap-2 flex-wrap duration-500">
                                     {data.variation.map((item, index) => (
                                         <div
@@ -474,25 +485,31 @@ const Product: React.FC<ProductProps> = ({ data, type, style }) => {
 
                             {style === 'style-5' &&
                                 <>
-                                    {data.action === 'add to cart' ? (
-                                        <div
-                                            className="add-cart-btn w-full text-button-uppercase py-2.5 text-center mt-2 rounded-full duration-300 bg-white border border-black hover:bg-black hover:text-white max-lg:hidden"
-                                            onClick={e => {
-                                                e.stopPropagation()
-                                                handleAddToCart()
-                                            }}
-                                        >
-                                            Add To Cart
-                                        </div>
+                                    {data.isInStock ? (
+                                        data.action === 'add to cart' ? (
+                                            <div
+                                                className="add-cart-btn w-full text-button-uppercase py-2.5 text-center mt-2 rounded-full duration-300 bg-white border border-black hover:bg-black hover:text-white max-lg:hidden"
+                                                onClick={e => {
+                                                    e.stopPropagation()
+                                                    handleAddToCart()
+                                                }}
+                                            >
+                                                Add To Cart
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className="quick-shop-btn text-button-uppercase py-2.5 text-center mt-2 rounded-full duration-300 bg-white border border-black hover:bg-black hover:text-white max-lg:hidden"
+                                                onClick={e => {
+                                                    e.stopPropagation()
+                                                    setOpenQuickShop(!openQuickShop)
+                                                }}
+                                            >
+                                                Quick Shop
+                                            </div>
+                                        )
                                     ) : (
-                                        <div
-                                            className="quick-shop-btn text-button-uppercase py-2.5 text-center mt-2 rounded-full duration-300 bg-white border border-black hover:bg-black hover:text-white max-lg:hidden"
-                                            onClick={e => {
-                                                e.stopPropagation()
-                                                setOpenQuickShop(!openQuickShop)
-                                            }}
-                                        >
-                                            Quick Shop
+                                        <div className="out-of-stock-btn w-full text-button-uppercase py-2.5 text-center mt-2 rounded-full duration-300 bg-gray-200 text-gray-500 cursor-not-allowed max-lg:hidden">
+                                            Out of Stock
                                         </div>
                                     )}
                                 </>
@@ -572,51 +589,57 @@ const Product: React.FC<ProductProps> = ({ data, type, style }) => {
                                                     </div>
                                                 )}
                                             </div>
-                                            {data.variation.length > 0 && data.action === 'add to cart' ? (
-                                                <div className="list-color max-md:hidden py-2 mt-5 mb-1 flex items-center gap-3 flex-wrap duration-300">
-                                                    {data.variation.map((item, index) => (
-                                                        <div
-                                                            key={index}
-                                                            className={`color-item w-8 h-8 rounded-full duration-300 relative`}
-                                                            style={{ backgroundColor: `${item.colorCode}` }}
-                                                        >
-                                                            <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">{item.color}</div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    {data.variation.length > 0 && data.action === 'quick shop' ? (
-                                                        <>
-                                                            <div className="list-color flex items-center gap-2 flex-wrap mt-5">
-                                                                {data.variation.map((item, index) => (
-                                                                    <div
-                                                                        className={`color-item w-12 h-12 rounded-xl duration-300 relative ${activeColor === item.color ? 'active' : ''}`}
-                                                                        key={index}
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation()
-                                                                            handleActiveColor(item.color)
-                                                                        }}
-                                                                    >
-                                                                        <Image
-                                                                            src={item.colorImage}
-                                                                            width={100}
-                                                                            height={100}
-                                                                            alt='color'
-                                                                            priority={true}
-                                                                            className='rounded-xl'
-                                                                        />
-                                                                        <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
-                                                                            {item.color}
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
+                                            {data.isInStock ? (
+                                                data.variation.length > 0 && data.action === 'add to cart' ? (
+                                                    <div className="list-color max-md:hidden py-2 mt-5 mb-1 flex items-center gap-3 flex-wrap duration-300">
+                                                        {data.variation.map((item, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className={`color-item w-8 h-8 rounded-full duration-300 relative`}
+                                                                style={{ backgroundColor: `${item.colorCode}` }}
+                                                            >
+                                                                <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">{item.color}</div>
                                                             </div>
-                                                        </>
-                                                    ) : (
-                                                        <></>
-                                                    )}
-                                                </>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        {data.variation.length > 0 && data.action === 'quick shop' ? (
+                                                            <>
+                                                                <div className="list-color flex items-center gap-2 flex-wrap mt-5">
+                                                                    {data.variation.map((item, index) => (
+                                                                        <div
+                                                                            className={`color-item w-12 h-12 rounded-xl duration-300 relative ${activeColor === item.color ? 'active' : ''}`}
+                                                                            key={index}
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation()
+                                                                                handleActiveColor(item.color)
+                                                                            }}
+                                                                        >
+                                                                            <Image
+                                                                                src={item.colorImage}
+                                                                                width={100}
+                                                                                height={100}
+                                                                                alt='color'
+                                                                                priority={true}
+                                                                                className='rounded-xl'
+                                                                            />
+                                                                            <div className="tag-action bg-black text-white caption2 capitalize px-1.5 py-0.5 rounded-sm">
+                                                                                {item.color}
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <></>
+                                                        )}
+                                                    </>
+                                                )
+                                            ) : (
+                                                <div className="out-of-stock-btn w-full text-button-uppercase py-2 text-center rounded-full duration-500 bg-gray-200 text-gray-500 cursor-not-allowed">
+                                                    Out of Stock
+                                                </div>
                                             )}
                                             <div className='text-secondary desc mt-5 max-sm:hidden'>{data.description}</div>
                                         </div>

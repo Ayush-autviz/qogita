@@ -16,7 +16,7 @@ const serverTimeLeft: CountdownTimeType = countdownTime();
 const instrument = Instrument_Sans({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Anvogue',
+  title: 'Qogita',
   description: 'Multipurpose eCommerce Template',
 }
 

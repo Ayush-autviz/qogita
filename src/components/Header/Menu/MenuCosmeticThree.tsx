@@ -72,7 +72,7 @@ const MenuCosmeticThree = () => {
                             <i className="icon-category text-2xl"></i>
                         </div>
                         <Link href={'/'} className='flex items-center'>
-                            <div className="heading4">Anvogue</div>
+                            <div className="heading4">Qogita</div>
                         </Link>
                         <div className="menu-main h-full max-lg:hidden">
                             <ul className='flex items-center gap-8 h-full'>
@@ -923,7 +923,7 @@ const MenuCosmeticThree = () => {
                                             ${openLoginPopup ? 'open' : ''}`}
                                     >
                                         <Link href={'/login'} className="button-main w-full text-center">Login</Link>
-                                        <div className="text-secondary text-center mt-3 pb-4">Don’t have an account?
+                                        <div className="text-secondary text-center mt-3 pb-4">Don't have an account?
                                             <Link href={'/register'} className='text-black pl-1 hover:underline'>Register</Link>
                                         </div>
                                         <Link href={'/my-account'} className="button-main bg-white text-black border border-black w-full text-center">Dashboard</Link>
@@ -955,7 +955,7 @@ const MenuCosmeticThree = () => {
                                 >
                                     <Icon.X size={14} />
                                 </div>
-                                <Link href={'/'} className='logo text-3xl font-semibold text-center'>Anvogue</Link>
+                                <Link href={'/'} className='logo text-3xl font-semibold text-center'>Qogita</Link>
                             </div>
                             <div className="form-search relative mt-2">
                                 <Icon.MagnifyingGlass size={20} className='absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer' />

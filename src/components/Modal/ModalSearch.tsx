@@ -10,6 +10,7 @@ import Product from '../Product/Product';
 import { useModalSearchContext } from '@/context/ModalSearchContext'
 import { searchProductsByTerm, Product as ProductType } from '@/services/productService'
 import SearchShadcnSkeleton from '../Skeleton/SearchShadcnSkeleton'
+import { Button } from '@/components/ui/button'
 
 const ModalSearch = () => {
     const { isModalOpen, closeModalSearch } = useModalSearchContext();
@@ -38,7 +39,7 @@ const ModalSearch = () => {
 
         setIsSearching(true);
         try {
-            const response = await searchProductsByTerm(term, { page_size: 8 });
+            const response = await searchProductsByTerm(term, { page_size: 4 });
             setSearchResults(response.results || []);
         } catch (error) {
             console.error('Error searching products:', error);
@@ -50,11 +51,16 @@ const ModalSearch = () => {
 
     const handleSearch = (value: string) => {
         if (!value.trim()) return;
+        router.push(`/search-result?query=${encodeURIComponent(value)}`);
+        closeModalSearch();
+        setSearchKeyword('');
+    };
 
-        router.push(`/products/search?term=${encodeURIComponent(value)}`)
-        closeModalSearch()
-        setSearchKeyword('')
-    }
+    const handleSeeMore = () => {
+        if (!searchKeyword.trim()) return;
+        router.push(`/search-result?query=${encodeURIComponent(searchKeyword)}`);
+        closeModalSearch();
+    };
 
     return (
         <>
@@ -66,9 +72,7 @@ const ModalSearch = () => {
                     <div className="form-search relative">
                         <Icon.MagnifyingGlass
                             className='absolute heading5 right-6 top-1/2 -translate-y-1/2 cursor-pointer'
-                            onClick={() => {
-                                handleSearch(searchKeyword)
-                            }}
+                            onClick={() => handleSearch(searchKeyword)}
                         />
                         <input
                             type="text"
@@ -79,7 +83,7 @@ const ModalSearch = () => {
                             onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchKeyword)}
                         />
                     </div>
-                    <div className="keyword mt-8">
+                    {/* <div className="keyword mt-8">
                         <div className="heading5">Feature keywords Today</div>
                         <div className="list-keyword flex items-center flex-wrap gap-3 mt-4">
                             <div
@@ -107,56 +111,73 @@ const ModalSearch = () => {
                                 Top
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     {searchKeyword.trim().length >= 2 ? (
                         <div className="search-results mt-8">
-                            <div className="heading6 flex items-center justify-between">
+                            {/* <div className="heading6 flex items-center justify-between">
                                 <span>Search Results {searchResults.length > 0 && `(${searchResults.length})`}</span>
-                                {searchResults.length > 0 && (
-                                    <Link
-                                        href={`/products/search?term=${encodeURIComponent(searchKeyword)}`}
-                                        className="text-button-uppercase text-secondary hover:text-black"
-                                        onClick={closeModalSearch}
-                                    >
-                                        View All
-                                    </Link>
-                                )}
-                            </div>
+                            </div> */}
+
                             {isSearching ? (
                                 <SearchShadcnSkeleton />
                             ) : searchResults.length > 0 ? (
-                                <div className="list-product pb-5 hide-product-sold grid xl:grid-cols-4 sm:grid-cols-2 gap-7 mt-4">
-                                    {searchResults.map((product) => (
-                                        <Product
-                                            key={product.qid || product.name}
-                                            data={{
-                                                id: product.qid || '',
-                                                category: product.categoryName || '',
-                                                name: product.name,
-                                                price: product.price ? parseFloat(product.price.toString()) : 0,
-                                                rate: 5,
-                                                new: false,
-                                                sale: false,
-                                                thumbnail: product.imageUrl || '',
-                                                thumbImage: [product.imageUrl || ''],
-                                                totalSell: 0,
-                                                discount: 0,
-                                                priceSale: 0,
-                                                type: 'fashion',
-                                                vendor: product.brandName || '',
-                                                slug: product.slug || '',
-                                                gtin: product.gtin || '',
-                                                quantity: 100,
-                                                sold: 0,
-                                                variation: [],
-                                                originPrice: product.price ? parseFloat(product.price.toString()) : 0,
-                                                action: 'add to cart',
-                                            }}
-                                            type='grid'
-                                            style='style-1'
-                                        />
-                                    ))}
-                                </div>
+                                <>
+                                    <div className="list-product pb-5 hide-product-sold grid xl:grid-cols-4 sm:grid-cols-2 gap-7 mt-4">
+                                        {searchResults.slice(0, 4).map((product) => (
+                                            <div key={product.qid || product.name} className="product-item">
+                                                <div
+                                                    className="product-card cursor-pointer"
+                                                    onClick={() => {
+                                                        if (product.gtin) {
+                                                            router.push(`/product/default?gtin=${product.gtin}`);
+                                                        }
+                                                    }}
+                                                >
+                                                    <div className="product-thumb">
+                                                        {product.imageUrl ? (
+                                                            <img
+                                                                src={product.imageUrl}
+                                                                alt={product.name}
+                                                                className="w-full h-[200px] object-cover rounded-lg"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-[200px] bg-gray-200 flex items-center justify-center rounded-lg">
+                                                                <span className="text-gray-500">No image available</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="product-content p-4">
+                                                        <h3 className="product-name text-button-uppercase">{product.name}</h3>
+                                                        <div className="product-meta flex items-center justify-between mt-2">
+                                                            <div className="product-price">
+                                                                {product.price ? (
+                                                                    <span className="text-title">${product.price}</span>
+                                                                ) : (
+                                                                    <span className="text-title">Price not available</span>
+                                                                )}
+                                                            </div>
+                                                            <div className="product-brand caption1">
+                                                                {product.brandName}
+                                                            </div>
+                                                        </div>
+                                                        <div className="product-category caption1 text-black mt-1">
+                                                            {product.categoryName}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <Button
+                                            onClick={handleSeeMore}
+                                            className="button-main bg-black text-white hover:bg-black/90 px-6 py-3 rounded-full flex items-center gap-2"
+                                        >
+                                            <Icon.MagnifyingGlass size={20} />
+                                            See More Results
+                                        </Button>
+                                    </div>
+                                </>
                             ) : (
                                 <div className="no-results flex flex-col items-center justify-center h-40 text-center">
                                     <Icon.MagnifyingGlass size={32} className="text-secondary mb-2" />
@@ -169,7 +190,42 @@ const ModalSearch = () => {
                             <div className="heading6">Recently viewed products</div>
                             <div className="list-product pb-5 hide-product-sold grid xl:grid-cols-4 sm:grid-cols-2 gap-7 mt-4">
                                 {recentlyViewed.map((product) => (
-                                    <Product key={product.id} data={product} type='grid' style='style-1' />
+                                    <div key={product.id} className="product-item">
+                                        <div
+                                            className="product-card cursor-pointer"
+                                            onClick={() => {
+                                                router.push(`/product/default?slug=${product.slug}`);
+                                            }}
+                                        >
+                                            <div className="product-thumb">
+                                                {product.thumbImage && product.thumbImage.length > 0 ? (
+                                                    <img
+                                                        src={product.thumbImage[0]}
+                                                        alt={product.name}
+                                                        className="w-full h-[200px] object-cover rounded-lg"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-[200px] bg-gray-200 flex items-center justify-center rounded-lg">
+                                                        <span className="text-gray-500">No image available</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="product-content p-4">
+                                                <h3 className="product-name text-button-uppercase">{product.name}</h3>
+                                                <div className="product-meta flex items-center justify-between mt-2">
+                                                    <div className="product-price">
+                                                        <span className="text-title">${product.price}</span>
+                                                    </div>
+                                                    <div className="product-brand caption1">
+                                                        {product.vendor || product.brand}
+                                                    </div>
+                                                </div>
+                                                <div className="product-category caption1 text-black mt-1">
+                                                    {product.category}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         </div>

@@ -181,6 +181,9 @@ export const searchProductsByTerm = async (term: string, queryParams?: Record<st
   // Create URL search params for additional query parameters
   const params = new URLSearchParams();
 
+  // Add the search term as a query parameter
+  params.append('query', term);
+
   if (queryParams) {
     Object.entries(queryParams).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
@@ -190,7 +193,7 @@ export const searchProductsByTerm = async (term: string, queryParams?: Record<st
   }
 
   const queryString = params.toString();
-  const url = `/api/products/search/${term}${queryString ? `?${queryString}` : ''}`;
+  const url = `/api/products/search?${queryString}`;
 
   const response = await axiosClient.get(url);
   return response.data.data;
